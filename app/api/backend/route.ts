@@ -23,8 +23,7 @@ export async function POST(request: Request) {
     }
 
     const result = await callAppsScript(action, payload);
-    const status = result.ok ? 200 : 502;
-    return NextResponse.json(result, { status });
+    return NextResponse.json(result, { status: 200 });
   } catch {
     return NextResponse.json({ ok: false, error: "Permintaan tidak valid." }, { status: 400 });
   }

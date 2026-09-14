@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "tamu": {
+      "title": "Tamu",
+      "description": "Daftar tamu undangan hajatan",
+      "type": "object",
+      "properties": {
+        "nama": { "type": "string" },
+        "alamat": { "type": "string" },
+        "noHp": { "type": "string" },
+        "kategori": { "type": "string" },
+        "catatan": { "type": "string" },
+        "petugas": { "type": "string" },
+        "waktu": { "type": "string" }
+      },
+      "required": ["nama"]
+    },
+    "telitian": {
+      "title": "Telitian",
+      "description": "Catatan telitian / amplop sumbangan hajatan",
+      "type": "object",
+      "properties": {
+        "jenis": { "type": "string", "enum": ["anak", "dewasa"] },
+        "no": { "type": "number" },
+        "nama": { "type": "string" },
+        "alamat": { "type": "string" },
+        "nominal": { "type": "number" },
+        "petugas": { "type": "string" },
+        "catatan": { "type": "string" },
+        "waktu": { "type": "string" }
+      },
+      "required": ["jenis", "nama", "nominal"]
+    },
+    "dokumentasi": {
+      "title": "Dokumentasi",
+      "description": "Foto dokumentasi acara dari tamu dan panitia",
+      "type": "object",
+      "properties": {
+        "pengirim": { "type": "string" },
+        "kategori": { "type": "string" },
+        "judul": { "type": "string" },
+        "keterangan": { "type": "string" },
+        "namaFile": { "type": "string" },
+        "driveFileId": { "type": "string" },
+        "driveUrl": { "type": "string" },
+        "thumbUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["Menunggu Persetujuan", "Disetujui", "Ditolak"] },
+        "waktu": { "type": "string" }
+      },
+      "required": ["pengirim", "kategori", "status"]
+    },
+    "pengaturan": {
+      "title": "Pengaturan",
+      "description": "Konfigurasi dasar acara",
+      "type": "object",
+      "properties": {
+        "namaAcara": { "type": "string" },
+        "namaAnak": { "type": "string" },
+        "tanggalAcara": { "type": "string" },
+        "lokasiAcara": { "type": "string" },
+        "pesanBeranda": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/tamu/{tamuId}": {
+      "schema": "tamu",
+      "description": "Daftar buku tamu hajatan"
+    },
+    "/telitian/{telitianId}": {
+      "schema": "telitian",
+      "description": "Catatan telitian amplop hajatan"
+    },
+    "/dokumentasi/{dokId}": {
+      "schema": "dokumentasi",
+      "description": "Koleksi foto dokumentasi acara"
+    },
+    "/pengaturan/{key}": {
+      "schema": "pengaturan",
+      "description": "Pengaturan acara"
+    }
+  }
+}

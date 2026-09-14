@@ -30,7 +30,29 @@ export async function apiCall<T = unknown>(action: string, payload: unknown = {}
       body: JSON.stringify({ action, payload: cleanPayload }),
       cache: "no-store"
     });
-    return await response.json();
+
+    const rawText = await response.text();
+    if (!rawText.trim()) {
+      return { ok: false, error: "Server tidak memberikan respons (respons kosong)." };
+    }
+
+    try {
+      return JSON.parse(rawText) as ApiResponse<T>;
+    } catch {
+      if (rawText.trim().startsWith("<") || rawText.toLowerCase().includes("<!doctype")) {
+        return {
+          ok: false,
+          error: "Respons server berupa halaman HTML, bukan data JSON.",
+          message:
+            "Hal ini terjadi jika Google Apps Script meminta login (Who has access belum 'Anyone') atau URL yang dimasukkan bukan URL Web App /exec."
+        };
+      }
+      return {
+        ok: false,
+        error: "Format respons server tidak valid.",
+        message: rawText.slice(0, 150)
+      };
+    }
   } catch (error) {
     return { ok: false, error: error instanceof Error ? error.message : "Tidak dapat terhubung ke server." };
   }

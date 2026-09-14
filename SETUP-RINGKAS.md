@@ -9,9 +9,12 @@
 5. Edit `INITIAL_SETUP` di `Setup.gs`.
 6. Jalankan `setupProject()` satu kali dan izinkan akses.
 7. Deploy Apps Script sebagai **Web app**:
-   - Execute as: Me
-   - Access: Anyone
-8. Salin URL `/exec`.
+   - **Execute as**: Me (email Anda)
+   - **Who has access**: **Anyone** (Siapa saja)  *(Wajib Anyone agar tidak terkena error HTML/Google Login redirect)*
+8. Salin URL `/exec` ke `APPS_SCRIPT_URL`.
+
+> 💡 **Solusi Error "Unexpected token '<', <!doctype...":**
+> Buka Apps Script > klik tombol biru **Deploy** > **Manage deployments** > klik ikon **Pensil (Edit)** > pastikan **Who has access** adalah **Anyone**, pilih **New version**, lalu klik **Deploy**. Pastikan juga URL yang disalin berakhiran `/exec`, bukan link editor `/edit` atau `/dev`.
 
 ## B. Website
 

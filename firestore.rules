@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Tamu: Tamu can add entries, authenticated admin can read/write all
+    match /tamu/{tamuId} {
+      allow read: if true;
+      allow create: if request.resource.data.nama is string && request.resource.data.nama.size() > 0;
+      allow update, delete: if request.auth != null;
+    }
+
+    // Telitian: Authenticated admin can read and write
+    match /telitian/{telitianId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Dokumentasi: Anyone can submit photo, public can read approved, admin can manage all
+    match /dokumentasi/{dokId} {
+      allow read: if resource.data.status == 'Disetujui' || request.auth != null;
+      allow create: if request.resource.data.pengirim is string &&
+                      request.resource.data.status == 'Menunggu Persetujuan';
+      allow update, delete: if request.auth != null;
+    }
+
+    // Pengaturan: Public can read, admin can write
+    match /pengaturan/{key} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

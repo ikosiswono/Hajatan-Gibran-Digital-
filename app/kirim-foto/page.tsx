@@ -248,6 +248,15 @@ export default function KirimFotoPage() {
     message?.details?.includes("APP_SECRET") ||
     message?.details?.includes("Konfigurasi server belum lengkap");
 
+  const isDeployAccessError =
+    message?.details?.includes("HTML") ||
+    message?.details?.includes("doctype") ||
+    message?.details?.includes("login") ||
+    message?.details?.includes("Google Login") ||
+    message?.details?.includes("Who has access") ||
+    message?.details?.includes("dialihkan") ||
+    message?.details?.includes("bukan format JSON");
+
   return (
     <>
       <PublicHeader />
@@ -409,6 +418,45 @@ export default function KirimFotoPage() {
                         </li>
                         <li>
                           Pastikan Anda sudah menjalankan fungsi <code>setupProject()</code> di Google Apps Script satu kali untuk membuat folder Drive dan sheet database.
+                        </li>
+                      </ol>
+                    </div>
+                  )}
+                  {isDeployAccessError && (
+                    <div
+                      style={{
+                        marginTop: "10px",
+                        padding: "12px",
+                        background: "#fef2f2",
+                        border: "1px solid #f87171",
+                        borderRadius: "8px",
+                        fontSize: "0.85em",
+                        color: "#991b1b"
+                      }}
+                    >
+                      <p style={{ margin: "0 0 6px 0", fontWeight: 700 }}>
+                        Cara Mengatasi &quot;Unexpected token &lt; !doctype...&quot;:
+                      </p>
+                      <p style={{ margin: "0 0 8px 0" }}>
+                        Google Apps Script mengembalikan halaman HTML/Login karena izin Web App belum disetel untuk publik.
+                      </p>
+                      <ol style={{ margin: "0", paddingLeft: "18px", lineHeight: "1.5" }}>
+                        <li>
+                          Buka Google Spreadsheet &gt; <strong>Ekstensi &gt; Apps Script</strong>.
+                        </li>
+                        <li>
+                          Klik tombol biru <strong>Deploy</strong> (kanan atas) &gt; <strong>Manage deployments</strong>.
+                        </li>
+                        <li>
+                          Klik ikon <strong>Pensil (Edit)</strong> pada deployment aktif:
+                          <ul style={{ paddingLeft: "16px", marginTop: "4px" }}>
+                            <li><strong>Execute as:</strong> Me (email Anda)</li>
+                            <li><strong>Who has access:</strong> <strong>Anyone</strong> (Siapa saja) &larr; <em>Wajib Anyone</em></li>
+                            <li><strong>Version:</strong> <strong>New version</strong> (Versi baru)</li>
+                          </ul>
+                        </li>
+                        <li>
+                          Klik <strong>Deploy</strong>, lalu salin URL Web App yang berakhiran <code>/exec</code> ke Settings aplikasi.
                         </li>
                       </ol>
                     </div>

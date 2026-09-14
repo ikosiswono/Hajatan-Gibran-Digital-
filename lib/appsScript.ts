@@ -25,11 +25,50 @@ export async function callAppsScript<T = unknown>(action: string, payload: unkno
     });
 
     const text = await response.text();
+
+    // Check if the response is HTML instead of JSON
+    if (text.trim().startsWith("<") || text.toLowerCase().includes("<!doctype")) {
+      const isLoginRedirect =
+        text.includes("ServiceLogin") ||
+        text.includes("accounts.google.com") ||
+        text.includes("Google Accounts") ||
+        text.includes("Sign in");
+
+      if (isLoginRedirect) {
+        return {
+          ok: false,
+          error: "Akses Google Apps Script memerlukan login (dialihkan ke Google Login).",
+          message:
+            "Solusi: Buka Google Apps Script > Klik 'Deploy' > 'Manage deployments' > Klik ikon Pensil (Edit) > Ubah 'Who has access' (Siapa saja yang memiliki akses) menjadi 'Anyone' (Siapa saja), BUKAN 'Only myself' > Klik 'Deploy' (Pilih 'New version')."
+        };
+      }
+
+      if (text.includes("ScriptError") || text.includes("Google Docs")) {
+        return {
+          ok: false,
+          error: "Terjadi error internal pada Google Apps Script.",
+          message:
+            "Pastikan Anda sudah menjalankan fungsi setupProject() minimal 1 kali di Google Apps Script dan folder Drive tidak terkunci."
+        };
+      }
+
+      return {
+        ok: false,
+        error: "Google Apps Script mengembalikan halaman HTML alih-alih data JSON.",
+        message:
+          "Pastikan URL yang dimasukkan di APPS_SCRIPT_URL adalah URL Web App yang berakhiran '/exec' (bukan link editor /edit atau /dev) dan deployment disetel 'Who has access: Anyone'."
+      };
+    }
+
     let parsed: ApiResponse<T>;
     try {
       parsed = JSON.parse(text);
     } catch {
-      return { ok: false, error: "Respons Apps Script bukan format JSON yang valid.", message: text.slice(0, 180) };
+      return {
+        ok: false,
+        error: "Respons Apps Script bukan format JSON yang valid.",
+        message: text.slice(0, 180)
+      };
     }
     return parsed;
   } catch (error) {
