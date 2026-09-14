@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import Footer from "@/components/Footer";
+import KirimFotoQrCard from "@/components/KirimFotoQrCard";
 
 export default function HomePage() {
   return (
@@ -17,12 +18,20 @@ export default function HomePage() {
                 <Link id="btn-hero-kirim-foto" className="btn btn-primary" href="/kirim-foto">Kirim Dokumentasi</Link>
                 <Link id="btn-hero-galeri" className="btn btn-ghost" href="/galeri">Lihat Galeri</Link>
               </div>
+              <div style={{ marginTop: "22px", maxWidth: "340px" }}>
+                <KirimFotoQrCard compact idPrefix="hero-qr" />
+              </div>
               <div className="hero-trust" id="home-hero-trust">
                 <span>✓ Data terpusat</span><span>✓ Sinkron antar perangkat</span><span>✓ Dokumentasi Drive</span>
               </div>
             </div>
-            <div className="hero-visual" id="home-hero-visual" aria-hidden="true">
-              <div className="visual-card visual-main" id="card-visual-main"><span className="visual-icon">✦</span><strong>Momen Gibran</strong><small>Tersimpan rapi, mudah ditemukan.</small></div>
+            <div className="hero-visual" id="home-hero-visual">
+              <div className="visual-card visual-main" id="card-visual-main">
+                <KirimFotoQrCard showTitle={false} idPrefix="hero-visual-qr" />
+                <small style={{ marginTop: "10px", color: "var(--muted)", fontSize: "12px", fontWeight: 600 }}>
+                  Scan Kamera HP untuk Kirim Foto
+                </small>
+              </div>
               <div className="visual-card visual-float top" id="card-visual-live"><b>Live Data</b><span className="pulse-dot" /> Sinkron</div>
               <div className="visual-card visual-float bottom" id="card-visual-galeri"><b>Galeri</b><span>Foto terpilih</span></div>
             </div>
@@ -40,9 +49,19 @@ export default function HomePage() {
         </section>
 
         <section className="section soft-section" id="home-cta-section">
-          <div className="container split-callout" id="home-split-callout">
-            <div><span className="eyebrow">Bagikan momen</span><h2>Punya foto acara yang bagus?</h2><p>Kirim langsung melalui halaman dokumentasi. Foto akan masuk ke antrean persetujuan panitia.</p></div>
-            <Link id="btn-cta-kirim-foto" className="btn btn-primary" href="/kirim-foto">Buka Form Kirim Foto</Link>
+          <div className="container split-callout" id="home-split-callout" style={{ alignItems: "center" }}>
+            <div>
+              <span className="eyebrow">Bagikan momen</span>
+              <h2>Punya foto acara yang bagus?</h2>
+              <p>Kirim langsung melalui halaman dokumentasi dari ponsel Anda. Foto akan masuk ke antrean persetujuan panitia sebelum tampil di galeri.</p>
+              <div style={{ marginTop: "16px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <Link id="btn-cta-kirim-foto" className="btn btn-primary" href="/kirim-foto">Buka Form Kirim Foto</Link>
+                <Link id="btn-cta-galeri" className="btn btn-ghost" href="/galeri">Lihat Galeri</Link>
+              </div>
+            </div>
+            <div style={{ minWidth: "260px" }}>
+              <KirimFotoQrCard idPrefix="cta-qr" />
+            </div>
           </div>
         </section>
       </main>

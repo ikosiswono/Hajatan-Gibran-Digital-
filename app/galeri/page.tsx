@@ -1,10 +1,13 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PublicHeader from "@/components/PublicHeader";
 import Footer from "@/components/Footer";
 import { apiCall } from "@/lib/clientApi";
 import type { DokumentasiRow } from "@/lib/types";
+import KirimFotoQrCard from "@/components/KirimFotoQrCard";
+import KirimFotoQrModal from "@/components/KirimFotoQrModal";
 
 const cats=["Semua","Persiapan","Acara Utama","Keluarga","Tamu","Panitia","Singa Dangdut","Telitian","Dekorasi","Hiburan","Lainnya"];
 export default function GaleriPage() {
@@ -12,6 +15,7 @@ export default function GaleriPage() {
   const [cat, setCat] = useState("Semua");
   const [active, setActive] = useState<DokumentasiRow | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   const load = useCallback(async () => {
     const r = await apiCall<DokumentasiRow[]>("getPublicGallery");
@@ -32,11 +36,41 @@ export default function GaleriPage() {
     <>
       <PublicHeader />
       <main className="page-main container" id="galeri-page-root">
-        <div className="page-title" id="galeri-page-title">
-          <span className="eyebrow">Momen kebersamaan</span>
-          <h1>Galeri Hajatan Gibran</h1>
-          <p>Dokumentasi yang telah disetujui panitia akan tampil di sini.</p>
+        <div
+          id="galeri-header-flex"
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: "20px",
+            flexWrap: "wrap",
+            marginBottom: "24px"
+          }}
+        >
+          <div className="page-title" id="galeri-page-title" style={{ marginBottom: 0 }}>
+            <span className="eyebrow">Momen kebersamaan</span>
+            <h1>Galeri Hajatan Gibran</h1>
+            <p>Dokumentasi yang telah disetujui panitia akan tampil di sini.</p>
+            <div style={{ marginTop: "12px", display: "flex", gap: "10px", alignItems: "center" }}>
+              <button
+                type="button"
+                id="btn-galeri-open-qr"
+                className="btn btn-soft btn-small"
+                onClick={() => setShowQrModal(true)}
+              >
+                📱 QR Code Kirim Foto
+              </button>
+              <Link id="link-galeri-kirim-foto" href="/kirim-foto" className="btn btn-primary btn-small">
+                + Kirim Foto Baru
+              </Link>
+            </div>
+          </div>
+
+          <div style={{ width: "min(360px, 100%)" }}>
+            <KirimFotoQrCard compact idPrefix="galeri-header-qr" />
+          </div>
         </div>
+
         <div className="chip-row" id="galeri-category-chips">
           {cats.map((c) => (
             <button
@@ -99,6 +133,13 @@ export default function GaleriPage() {
             </div>
           </div>
         )}
+
+        <KirimFotoQrModal
+          isOpen={showQrModal}
+          onClose={() => setShowQrModal(false)}
+          title="Kirim Foto ke Galeri"
+          subtitle="Arahkan kamera HP Anda ke QR Code untuk mengunggah momen acara langsung dari ponsel."
+        />
       </main>
       <Footer />
     </>

@@ -5,9 +5,11 @@ import { apiCall } from "@/lib/clientApi";
 import type { DokumentasiRow } from "@/lib/types";
 import StatusPill from "@/components/StatusPill";
 import Toast from "@/components/Toast";
+import KirimFotoQrModal from "@/components/KirimFotoQrModal";
 
 export default function DokumentasiAdminPage(){
   const[rows,setRows]=useState<DokumentasiRow[]>([]);const[filter,setFilter]=useState("Semua");const[q,setQ]=useState("");const[toast,setToast]=useState<{m:string;k:"success"|"error"}|null>(null);const[loading,setLoading]=useState(true);
+  const[showQrModal,setShowQrModal]=useState(false);
   const load=useCallback(async()=>{const r=await apiCall<DokumentasiRow[]>("listDocumentation");if(r.ok)setRows(r.data||[]);else setToast({m:r.error||"Gagal memuat dokumentasi.",k:"error"});setLoading(false)},[]);
   useEffect(()=>{load();const id=setInterval(load,5000);return()=>clearInterval(id)},[load]);
   const shown=useMemo(()=>rows.filter(r=>(filter==="Semua"||r.Status===filter)&&(!q||`${r.Nama_Pengirim} ${r.Judul} ${r.Kategori}`.toLowerCase().includes(q.toLowerCase()))),[rows,filter,q]);
@@ -22,9 +24,19 @@ export default function DokumentasiAdminPage(){
           <h1>Dokumentasi</h1>
           <p>Foto kiriman tamu menunggu persetujuan sebelum tampil di galeri publik.</p>
         </div>
-        <div className="total-badge" id="badge-doc-menunggu">
-          <span>Menunggu</span>
-          <strong>{rows.filter((r) => r.Status === "Menunggu Persetujuan").length}</strong>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            id="btn-admin-print-qr"
+            className="btn btn-primary btn-small"
+            onClick={() => setShowQrModal(true)}
+          >
+            📱 QR Code Tamu / Cetak Meja
+          </button>
+          <div className="total-badge" id="badge-doc-menunggu">
+            <span>Menunggu</span>
+            <strong>{rows.filter((r) => r.Status === "Menunggu Persetujuan").length}</strong>
+          </div>
         </div>
       </div>
       <section className="admin-section-card" id="admin-dokumentasi-card">
@@ -112,6 +124,13 @@ export default function DokumentasiAdminPage(){
           </div>
         )}
       </section>
+
+      <KirimFotoQrModal
+        isOpen={showQrModal}
+        onClose={() => setShowQrModal(false)}
+        title="QR Code Meja Tamu & Kirim Foto"
+        subtitle="Unduh atau cetak QR Code ini untuk ditempel di meja tamu, buku tamu, prasmanan, atau area photobooth."
+      />
     </div>
   );
 }

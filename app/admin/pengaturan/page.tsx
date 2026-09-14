@@ -2,6 +2,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { apiCall } from "@/lib/clientApi";
 import Toast from "@/components/Toast";
+import KirimFotoQrCard from "@/components/KirimFotoQrCard";
 import {
   initAuth,
   signInWithGoogle,
@@ -254,6 +255,32 @@ export default function PengaturanPage() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className="admin-section-card" id="admin-pengaturan-qr-card">
+        <div className="card-heading">
+          <div>
+            <h2>QR Code Kirim Foto Tamu</h2>
+            <p>Kode QR untuk memudahkan tamu membuka formulir pengiriman foto dari ponsel tanpa mengetik alamat website.</p>
+          </div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", alignItems: "center" }}>
+          <div>
+            <h3 style={{ fontSize: "15px", margin: "0 0 6px" }}>Media Cetak Meja & Photobooth</h3>
+            <p style={{ color: "var(--muted)", fontSize: "13px", lineHeight: 1.5, margin: "0 0 14px" }}>
+              Anda dapat mencetak atau mengunduh QR Code ini untuk ditempatkan pada:
+            </p>
+            <ul style={{ color: "var(--muted)", fontSize: "13px", paddingLeft: "18px", margin: "0 0 16px" }}>
+              <li>Meja penerima tamu / meja souvenir</li>
+              <li>Setiap meja tamu / tenda acara</li>
+              <li>Area photobooth / backdrop foto</li>
+              <li>Grup WhatsApp keluarga dan tamu undangan</li>
+            </ul>
+          </div>
+          <div style={{ maxWidth: "340px", justifySelf: "center" }}>
+            <KirimFotoQrCard idPrefix="settings-qr" />
+          </div>
+        </div>
       </section>
 
       <section className="admin-section-card" id="admin-pengaturan-backup-card">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import PublicHeader from "@/components/PublicHeader";
 import Footer from "@/components/Footer";
 import { apiCall } from "@/lib/clientApi";
+import KirimFotoQrCard from "@/components/KirimFotoQrCard";
 
 const categories = [
   "Persiapan",
@@ -489,6 +490,16 @@ export default function KirimFotoPage() {
               <Link href="/galeri" className="btn btn-soft btn-small" id="link-to-galeri">
                 Lihat Galeri Foto
               </Link>
+            </div>
+
+            <div style={{ marginTop: "24px", paddingTop: "20px", borderTop: "1px solid var(--line)" }}>
+              <span className="eyebrow" style={{ fontSize: "11px", display: "block", marginBottom: "6px" }}>
+                Buka di Kamera HP
+              </span>
+              <p style={{ margin: "0 0 12px", fontSize: "12px", color: "var(--muted)" }}>
+                Sedang buka di komputer? Scan kode ini menggunakan kamera ponsel agar bisa langsung jepret dan unggah foto.
+              </p>
+              <KirimFotoQrCard idPrefix="kirim-foto-sidebar-qr" />
             </div>
           </aside>
         </div>
