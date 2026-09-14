@@ -1,0 +1,151 @@
+"use client";
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { apiCall, downloadCsv } from "@/lib/clientApi";
+import Toast from "@/components/Toast";
+
+type Panitia={ID:string;Nama:string;Bagian:string;No_HP:string;Catatan:string};
+export default function PanitiaPage(){const blank={Nama:"",Bagian:"",No_HP:"",Catatan:""};const[rows,setRows]=useState<Panitia[]>([]);const[form,setForm]=useState(blank);const[editing,setEditing]=useState<Panitia|null>(null);const[toast,setToast]=useState<{m:string;k:"success"|"error"}|null>(null);const load=useCallback(async()=>{const r=await apiCall<Panitia[]>("listPanitia");if(r.ok)setRows(r.data||[]);else setToast({m:r.error||"Gagal memuat panitia.",k:"error"})},[]);useEffect(()=>{load()},[load]);async function submit(e:FormEvent){e.preventDefault();const r=await apiCall(editing?"updatePanitia":"addPanitia",{...form,ID:editing?.ID});if(r.ok){setToast({m:"Data panitia tersimpan.",k:"success"});setForm(blank);setEditing(null);load()}else setToast({m:r.error||"Gagal menyimpan.",k:"error"})}async function remove(r:Panitia){if(!confirm(`Hapus ${r.Nama}?`))return;const x=await apiCall("deletePanitia",{ID:r.ID});if(x.ok)load();else setToast({m:x.error||"Gagal menghapus.",k:"error"})}  return (
+    <div id="admin-panitia-container">
+      {toast && <Toast message={toast.m} kind={toast.k} onClose={() => setToast(null)} />}
+      <div className="admin-page-heading" id="admin-panitia-header">
+        <div>
+          <span className="eyebrow">Tim acara</span>
+          <h1>Panitia</h1>
+          <p>Susun petugas dan pembagian bagian secara rapi.</p>
+        </div>
+        <div className="total-badge" id="badge-total-panitia">
+          <span>Total Panitia</span>
+          <strong>{rows.length}</strong>
+        </div>
+      </div>
+      <section className="admin-section-card compact" id="admin-panitia-form-card">
+        <div className="card-heading">
+          <div>
+            <h2>{editing ? "Edit panitia" : "Tambah panitia"}</h2>
+          </div>
+        </div>
+        <form id="form-panitia" className="form-grid" onSubmit={submit}>
+          <label htmlFor="input-panitia-nama">
+            Nama
+            <input
+              id="input-panitia-nama"
+              required
+              value={form.Nama}
+              onChange={(e) => setForm({ ...form, Nama: e.target.value })}
+            />
+          </label>
+          <label htmlFor="input-panitia-bagian">
+            Bagian / Tugas
+            <input
+              id="input-panitia-bagian"
+              required
+              placeholder="Prasmanan, parkir, keamanan..."
+              value={form.Bagian}
+              onChange={(e) => setForm({ ...form, Bagian: e.target.value })}
+            />
+          </label>
+          <label htmlFor="input-panitia-hp">
+            No. HP
+            <input
+              id="input-panitia-hp"
+              value={form.No_HP}
+              onChange={(e) => setForm({ ...form, No_HP: e.target.value })}
+            />
+          </label>
+          <label htmlFor="input-panitia-catatan">
+            Catatan
+            <input
+              id="input-panitia-catatan"
+              value={form.Catatan}
+              onChange={(e) => setForm({ ...form, Catatan: e.target.value })}
+            />
+          </label>
+          <div className="form-actions span-2">
+            <button id="btn-submit-panitia" className="btn btn-primary">
+              {editing ? "Simpan Perubahan" : "Tambah Panitia"}
+            </button>
+            {editing && (
+              <button
+                id="btn-cancel-edit-panitia"
+                type="button"
+                className="btn btn-soft"
+                onClick={() => {
+                  setEditing(null);
+                  setForm(blank);
+                }}
+              >
+                Batal
+              </button>
+            )}
+          </div>
+        </form>
+      </section>
+      <section className="admin-section-card" id="admin-panitia-table-card">
+        <div className="toolbar">
+          <div />
+          <button
+            id="btn-export-panitia"
+            className="btn btn-soft btn-small"
+            onClick={() => downloadCsv("panitia.csv", rows as unknown as Record<string, unknown>[])}
+          >
+            Export CSV
+          </button>
+        </div>
+        {!rows.length ? (
+          <div className="empty-state" id="panitia-empty-state">Belum ada data panitia.</div>
+        ) : (
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nama</th>
+                  <th>Bagian</th>
+                  <th>No. HP</th>
+                  <th>Catatan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr key={r.ID}>
+                    <td>
+                      <strong>{r.Nama}</strong>
+                    </td>
+                    <td>{r.Bagian}</td>
+                    <td>{r.No_HP}</td>
+                    <td>{r.Catatan}</td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                          id={`btn-edit-panitia-${r.ID}`}
+                          onClick={() => {
+                            setEditing(r);
+                            setForm({
+                              Nama: r.Nama,
+                              Bagian: r.Bagian,
+                              No_HP: r.No_HP,
+                              Catatan: r.Catatan
+                            });
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          id={`btn-del-panitia-${r.ID}`}
+                          className="danger-link"
+                          onClick={() => remove(r)}
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}

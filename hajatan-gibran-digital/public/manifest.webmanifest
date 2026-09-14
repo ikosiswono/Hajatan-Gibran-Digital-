@@ -1,0 +1,9 @@
+{
+  "name": "Hajatan Gibran Digital",
+  "short_name": "Hajatan Gibran",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaff",
+  "theme_color": "#7656d8",
+  "description": "Dokumentasi dan sistem informasi Hajatan Gibran Digital"
+}

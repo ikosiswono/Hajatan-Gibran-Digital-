@@ -1,0 +1,6 @@
+{
+  "name": "Hajatan Gibran Digital",
+  "description": "Dokumentasi dan sistem pengelolaan hajatan Gibran dalam satu platform digital.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
